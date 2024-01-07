@@ -3,21 +3,24 @@
 namespace App\Exports;
 
 use App\Models\Late;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class LateExport implements FromCollection, WithHeadings
+class LatePsExport implements FromCollection, WithHeadings
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
-    
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
-
-        // Retrieve data from the database
-        $lates = Late::with('student')->get();
+        // Retrieve data from the database for the current user's rayon
+        $lates = Late::with('student.rayon', 'student.rombel')
+            ->whereHas('student.rayon', function ($query) {
+                $query->where('rayon', Auth::user()->rayon->rayon);
+            })
+            ->get();
 
         // Create a map to store unique student IDs and their corresponding names
         $studentNames = [];
@@ -33,8 +36,8 @@ class LateExport implements FromCollection, WithHeadings
                 return [
                     'NIS' => $late->student->nis,
                     'Nama' => $late->student->name,
-                    'Rombel' => $late->student->rombel->rombel, // Access the 'rombel' property
-                    'Rayon' => $late->student->rayon->rayon, // Access the 'rayon' property
+                    'Rombel' => $late->student->rombel->rombel,
+                    'Rayon' => $late->student->rayon->rayon,
                     'Jumlah Keterlambatan' => $this->getJumlahKeterlambatan($late->student->id),
                 ];
             }

@@ -12,17 +12,17 @@
         <h3 class="text-data" style="margin: 25px 50px 5px 50px;">Detail Data Keterlambatan</h3>
         <ul class="nav" style="margin-left: 35px;  ">
             <li class="nav-item">
-                <a class="nav-link " href="{{ URL('/dashboard') }}">Home /</a>
+                <a class="nav-link " href="{{ URL('/dashboard') }}" style="color:#93BFCF;">Home /</a>
             </li>
             <li class="nav-item nav-underline">
-                <a class="nav-link" href="{{ route('ps.late.index') }}">Data Keterlambatan /</a>
+                <a class="nav-link" href="{{ route('ps.late.index') }}" style="color:#93BFCF;">Data Keterlambatan /</a>
             </li>
             <li class="nav-item nav-underline">
-                <a class="nav-link " href="{{ route('ps.late.rekap') }}"> Rekapitulasi Data /</a>
+                <a class="nav-link " href="{{ route('ps.late.rekap') }}" style="color:#93BFCF;"> Rekapitulasi Data /</a>
 
             </li>
             <li class="nav-item nav-underline">
-                <a class="nav-link" href="#"> Detail Data</a>
+                <a class="nav-link" href="#" style="color:#6096B4;"> Detail Data</a>
             </li>
         </ul>
         <div class="row row-cols-1 row-cols-md-3 g-4" style="margin: 5px 50px;">

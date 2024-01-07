@@ -12,14 +12,14 @@
         <h3 class="rombel-text" style="margin: 30px 0 0px 50px;">Data Siswa</h3>
         <ul class="nav" style="margin: 15px 35px;  ">
             <li class="nav-item">
-                <a class="nav-link disabled" aria-disabled="true">Home /</a>
+                <a class="nav-link" href="{{ URL('/dashboard')}}" style="color:#93BFCF;" >Home /</a>
             </li>
             <li class="nav-item nav-underline">
-                <a class="nav-link" href="">Data Siswa</a>
+                <a class="nav-link" href="#" style="color:#6096B4;">Data Siswa</a>
             </li>
         </ul>
 
-        <div class="card" style="display:flex; background-color: white; padding:40px; margin: 30px 50px">
+        <div class="card" style="display:flex; background-color: white; padding:40px; margin: 0px 50px">
             <div class="d-flex mb-3" style="justify-content:space-between; ">
                 <form action="{{ route('ps.student.data') }}" style="" method="GET">
                     <input type="text" name="query" placeholder="Cari...">

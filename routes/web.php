@@ -70,7 +70,7 @@ Route::middleware('IsAdmin')->group(function() {
         Route::get('/print/{id}', [LateController::class, 'print'])->name('print');
         Route::get('/detail-keterlambatan/{id}', [LateController::class, 'detailKeterlambatan'])->name('detail');
         Route::get('/export', [LateController::class, 'exportToExcel'])->name('export');
-        Route::get('/{id}', [LateController::class, 'edit'])->name('edit');
+        Route::get('/late/{id}/edit', [LateController::class, 'edit'])->name('edit');
         Route::patch('/{id}', [LateController::class, 'update'])->name('update');
         Route::delete('/{id}', [LateController::class, 'destroy'])->name('delete');
     });
@@ -84,7 +84,7 @@ Route::middleware('IsPs')->group(function() {
         Route::get('/rekap-ps', [LateController::class, 'rekapitulasiPs'])->name('rekap');
         Route::get('/surat/{id}', [LateController::class, 'surat'])->name('surat');
         Route::get('/detail/{id}', [LateController::class, 'detail'])->name('detail');
-        Route::get('/excel', [LateController::class, 'exportToExcel'])->name('export');
+        Route::get('/excel', [LateController::class, 'exportPSToExcel'])->name('export');
         Route::get('/pernyataan/{id}', [LateController::class, 'unduhPS'])->name('unduh');
         Route::get('/print-surat/{id}', [LateController::class, 'printPS'])->name('print');
     });

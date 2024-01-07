@@ -12,37 +12,38 @@
         <h3 class="text-data" style="margin: 25px 50px 5px 50px;">Data Keterlambatan</h3>
         <ul class="nav" style="margin-left: 35px;  ">
             <li class="nav-item">
-                <a class="nav-link disabled" href="#" aria-disabled="true">Home /</a>
+                <a class="nav-link" href="{{ URL('/dashboard')}}" style="color:#93BFCF;" >Home /</a>
             </li>
             <li class="nav-item nav-underline">
-                <a class="nav-link" href="{{ route('ps.late.index') }}">Data Keterlambatan </a>
+                <a class="nav-link" href="{{ route('ps.late.index') }}" style="color:#93BFCF;">Data Keterlambatan /</a>
             </li>
             <li class="nav-item nav-underline">
-                <a class="nav-link" href="#"> / Rekapitulasi Data</a>
+                <a class="nav-link" href="#" style="color:#6096B4;"> Rekapitulasi Data</a>
             </li>
         </ul>
-
-        <div class="card p-5" style="margin:10px 40px;">
-
+        <div class="card p-5" style="margin:0px 50px;">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="{{ route('ps.late.index') }}">Data Keseluruhan</a>
+                    <a class="nav-link" href="{{ route('ps.late.index') }}">Data Keseluruhan</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="">Rekapitulasi Keterlambatan</a>
+                    <a class="nav-link active" aria-current="page" href="#">Rekapitulasi Keterlambatan</a>
                 </li>
             </ul>
 
 
-            <div class="card" style="background-color: white; padding:20px; margin-top:20px;">
-                <div class="d-flex mb-3 justify-content-end">
-                    <form action="{{ route('ps.late.rekap') }}" style="" method="GET">
+            <div class="card d-flex" style="background-color: white; padding:20px; margin-top:20px;">
+                <div class="d-flex mb-3" style="justify-content:space-between;">
+                    <a href="{{ route('ps.late.export') }}"><button class="btn btn-success">Export Data Keterlambatan</button></a>
+
+                    <form action="{{ route('ps.late.index') }}" style="" method="GET">
                         <input type="text" name="query" placeholder="Cari...">
                         <button type="submit" class="btn btn-info"><ion-icon name="search-outline"></ion-icon></button>
-                        <a href="{{ route('ps.late.rekap') }}" class="btn btn-secondary"><ion-icon
+                        <a href="{{ route('ps.late.index') }}" class="btn btn-secondary"><ion-icon
                                 name="refresh-outline"></ion-icon></a>
                     </form>
                 </div>
+
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>

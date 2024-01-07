@@ -14,10 +14,10 @@
         <h3 class="text-data" style="margin: 25px 50px 5px 50px;">Data User</h3>
         <ul class="nav" style="margin-left: 35px; margin-bottom: 25px;">
             <li class="nav-item">
-                <a class="nav-link disabled" href="#" aria-disabled="true">Home /</a>
+                <a class="nav-link" href="{{ URL('/dashboard')}}" style="color:#93BFCF;" >Home /</a>
             </li>
             <li class="nav-item nav-underline">
-                <a class="nav-link" href="{{ route('user.index')}}">Data User</a>
+                <a class="nav-link" href="#"  style="color:#6096B4;">Data User</a>
             </li>
         </ul>
 

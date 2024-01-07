@@ -16,7 +16,7 @@
 </head>
 <style>
     .surat {
-        margin: 10px 50px;
+        margin: 20px 50px;
     }
 
     .judul {
@@ -41,25 +41,25 @@
     .ortu{
         float: right;
         margin-right: 50px;
-        margin-top: 20px;
+        margin-top: 18px;
         text-align: center;
     }
 
     .ttd-right {
         float: right;
-        margin-right: 80px;
-        margin-top: 20px;
+        margin-right: 85px;
+        margin-top: 18px;
         text-align: center;
     }
 
     .ttd-left {
         /* float: left; */
-        margin-left: -200px;
+        margin-left: -180px;
         text-align: center;
     }
     .ttd-left-left {
         /* float: left; */
-        margin-left: -225px;
+        margin-left: -215px;
         text-align: center;
     }
 </style>

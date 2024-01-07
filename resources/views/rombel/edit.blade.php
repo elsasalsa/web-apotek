@@ -13,6 +13,20 @@
             </ul>
         @endif
 
+        <div class="main">
+            <h3 class="text-data" style="margin: 25px 50px 5px 50px;">Data Rombel</h3>
+            <ul class="nav" style="margin-left: 35px;  ">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ URL('/dashboard')}}" style="color:#93BFCF;" >Home /</a>
+                </li>
+                <li class="nav-item nav-underline">
+                    <a class="nav-link" href="{{ route('rombel.index') }}" style="color:#93BFCF;">Data Rombel </a>
+                </li>
+                <li class="nav-item nav-underline">
+                    <a class="nav-link" href="#" style="color:#6096B4;"> / Edit Data Data</a>
+                </li>
+            </ul>
+
         <div class="card p-5" style="margin: 20px 50px;">
         <div class="mb-3 row">
             <label for="rombel" class="col-sm-2 col-form-label">Rombel :</label>

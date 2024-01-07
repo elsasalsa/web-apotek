@@ -12,13 +12,13 @@
             <h3 class="text-data" style="margin: 25px 50px 5px 50px;">Data Rayon</h3>
             <ul class="nav" style="margin-left: 35px;  ">
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#" aria-disabled="true">Home /</a>
+                    <a class="nav-link" href="{{ URL('/dashboard')}}" style="color:#93BFCF;" >Home /</a>
                 </li>
                 <li class="nav-item nav-underline">
-                    <a class="nav-link" href="{{ route('rayon.index') }}">Data Rayon </a>
+                    <a class="nav-link" href="{{ route('rayon.index') }}" style="color:#93BFCF;">Data Rayon </a>
                 </li>
                 <li class="nav-item nav-underline">
-                    <a class="nav-link" href="{{ route('rayon.create') }}"> / Tambah Data</a>
+                    <a class="nav-link" href="#" style="color:#6096B4;"> / Tambah Data</a>
                 </li>
             </ul>
 

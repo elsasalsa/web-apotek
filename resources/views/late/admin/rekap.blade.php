@@ -12,17 +12,23 @@
         <h3 class="text-data" style="margin: 25px 50px 5px 50px;">Data Keterlambatan</h3>
         <ul class="nav" style="margin-left: 35px;  ">
             <li class="nav-item">
-                <a class="nav-link disabled" href="#" aria-disabled="true">Home /</a>
+                <a class="nav-link" href="{{ URL('/dashboard')}}" style="color:#93BFCF;" >Home /</a>
             </li>
             <li class="nav-item nav-underline">
-                <a class="nav-link" href="{{ route('admin.late.index') }}">Data Keterlambatan </a>
+                <a class="nav-link" href="{{ route('admin.late.index') }}" style="color:#93BFCF;">Data Keterlambatan /</a>
             </li>
             <li class="nav-item nav-underline">
-                <a class="nav-link" href="#"> / Rekapitulasi Data</a>
+                <a class="nav-link" href="#" style="color:#6096B4;"> Rekapitulasi Data</a>
             </li>
         </ul>
 
         <div class="card p-5" style="margin:10px 40px;">
+            <div class="d-flex justify-content-start mb-3">
+                <a class="btn btn-primary" style="margin-bottom: 10px;" href="{{ route('admin.late.create') }}">Tambah
+                    Data</a>
+                <a class="btn btn-success" style="margin-left:10px; margin-bottom: 10px;"
+                    href="{{ route('admin.late.export') }}">Export Data</a>
+            </div>
 
             <ul class="nav nav-tabs">
                 <li class="nav-item">

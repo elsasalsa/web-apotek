@@ -12,18 +12,18 @@
         <h3 class="text-data" style="margin: 25px 50px 5px 50px;">Data Keterlambatan</h3>
         <ul class="nav" style="margin-left: 35px;  ">
             <li class="nav-item">
-                <a class="nav-link disabled" href="#" aria-disabled="true">Home /</a>
+                <a class="nav-link" href="{{ URL('/dashboard')}}" style="color:#93BFCF;" >Home /</a>
             </li>
             <li class="nav-item nav-underline">
-                <a class="nav-link" href="#">Data Keterlambatan </a>
+                <a class="nav-link" href="#" style="color:#6096B4;">Data Keterlambatan </a>
             </li>
         </ul>
 
-        <div class="card p-5" style="margin:10px 50px;">
+        <div class="card p-5" style="margin:0px 50px; ">
             <div class="d-flex justify-content-start mb-3">
-                <a class="btn btn-primary" style="margin-bottom: 20px;" href="{{ route('admin.late.create') }}">Tambah
+                <a class="btn btn-primary" style="margin-bottom: 10px;" href="{{ route('admin.late.create') }}">Tambah
                     Data</a>
-                <a class="btn btn-success" style="margin-left:10px; margin-bottom: 20px;"
+                <a class="btn btn-success" style="margin-left:10px; margin-bottom: 10px;"
                     href="{{ route('admin.late.export') }}">Export Data</a>
             </div>
             <ul class="nav nav-tabs">
@@ -70,8 +70,7 @@
                                 {{-- <td>{{ DB::table('lates')->where('student_id', $item['student']['id'])->count() }}</td> --}}
                                 {{-- <td>{{ $item['bukti'] }}</td> --}}
                                 <td class="d-flex">
-                                    <a href="{{ route('admin.late.edit', $item['id']) }}"
-                                        class="btn btn-primary me-2">Edit</a>
+                                    <a href="{{ route('admin.late.edit', ['id' => $item->id]) }}" class="btn btn-primary">Edit</a>
                                     <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                                         data-bs-target="#edit-stock">
                                         Hapus

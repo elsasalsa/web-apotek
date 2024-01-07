@@ -12,10 +12,10 @@
         <h3 class="rombel-text" style="margin: 30px 0 10px 50px;">Data Rayon</h3>
         <ul class="nav" style="margin-left: 35px;  ">
             <li class="nav-item">
-                <a class="nav-link disabled" aria-disabled="true">Home /</a>
+                <a class="nav-link" href="{{ URL('/dashboard')}}" style="color:#93BFCF;" >Home /</a>
             </li>
             <li class="nav-item nav-underline">
-                <a class="nav-link" href="">Data Rayon</a>
+                <a class="nav-link" href="" style="color:#6096B4;">Data Rayon</a>
             </li>
         </ul>
 

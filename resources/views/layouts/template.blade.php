@@ -21,7 +21,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg shadow-lg " style="background-color:#A0C3D2">
+    <nav class="navbar navbar-expand-lg shadow-lg fixed-top " style="background-color:#A0C3D2;">
         <div class="container-fluid ">
             <a class="navbar-brand text-white" href="#">Rekam Keterlambatan</a>
             <button class="btn" id="sidebar-toggle" type="button">
@@ -73,10 +73,10 @@
             </div>
         @endif
     </nav>
-    <div class="wrapper shadow-lg">
+    <div class="wrapper shadow-lg" style="margin-top: 50px;">
         <aside id="sidebar">
             
-            <ul class="sidebar-nav ">
+            <ul class="sidebar-nav " style="margin-top: 15px;">
                 <li class="sidebar-item">
                     <a href="{{ URL('/dashboard') }}" class="sidebar-link"><ion-icon name="apps-outline"></ion-icon>
                         Dashboard</a>
@@ -146,6 +146,10 @@
         ::after,
         ::before {
             box-sizing: border-box;
+        }
+
+        .main {
+            margin-top:10px;
         }
 
         body {

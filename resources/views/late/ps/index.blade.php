@@ -14,10 +14,10 @@
         <h3 class="text-data" style="margin: 25px 50px 5px 50px;">Data Keterlambatan</h3>
         <ul class="nav" style="margin-left: 35px;  ">
             <li class="nav-item">
-                <a class="nav-link disabled" href="#" aria-disabled="true">Home /</a>
+                <a class="nav-link" href="{{ URL('/dashboard')}}" style="color:#93BFCF;" >Home /</a>
             </li>
             <li class="nav-item nav-underline">
-                <a class="nav-link" href="#">Data Keterlambatan </a>
+                <a class="nav-link" href="#" style="color:#6096B4;">Data Keterlambatan </a>
             </li>
 
         </ul>
@@ -33,12 +33,9 @@
 
 
             <div class="card d-flex" style="background-color: white; padding:20px; margin-top:20px;">
-                <div class="d-flex mb-3 justify-content-start">
-                    <a href="{{ route('ps.late.export') }}" ><button
-                            class="btn btn-success">Export Excel</button></a>
-                </div>
+                <div class="d-flex mb-3" style="justify-content:space-between;">
+                    <a href="{{ route('ps.late.export') }}"><button class="btn btn-success">Export Data Keterlambatan</button></a>
 
-                <div class="d-flex mb-3 justify-content-end">
                     <form action="{{ route('ps.late.index') }}" style="" method="GET">
                         <input type="text" name="query" placeholder="Cari...">
                         <button type="submit" class="btn btn-info"><ion-icon name="search-outline"></ion-icon></button>

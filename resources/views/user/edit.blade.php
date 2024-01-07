@@ -13,7 +13,21 @@
             </ul>
         @endif
 
-        <div class="card p-5" style="margin: 20px 50px;">
+        <div class="main">
+            <h3 class="text-data" style="margin: 25px 50px 5px 50px;">Edit Data User</h3>
+            <ul class="nav" style="margin-left: 35px;  ">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ URL('/dashboard')}}" style="color:#93BFCF;" >Home /</a>
+                </li>
+                <li class="nav-item nav-underline">
+                    <a class="nav-link" href="{{ route('user.index') }}" style="color:#93BFCF;">Data User </a>
+                </li>
+                <li class="nav-item nav-underline">
+                    <a class="nav-link" href=""  style="color:#6096B4;"> / Edit Data</a>
+                </li>
+            </ul>
+
+        <div class="card p-5" style="margin: 5px 50px;">
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1"><ion-icon name="person-outline"></ion-icon></span>
                 <input type="text" id="name" name="name" class="form-control" value="{{ $user['name'] }}"
@@ -47,7 +61,7 @@
 
             <div class="input-group mb-3">
                 <span class="input-group-text" id="basic-addon1"><ion-icon name="lock-open-outline"></ion-icon></span>
-                <input type="text" id="password" name="password" class="form-control" aria-label="password"
+                <input type="password" id="password" name="password" class="form-control" aria-label="password"
                     placeholder="Masukkan Password Baru" aria-describedby="basic-addon1">
             </div>
             @error('password')

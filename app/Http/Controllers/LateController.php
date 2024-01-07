@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use PDF;
 use App\Exports\LateExport;
+use App\Exports\LatePsExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Late;
@@ -28,6 +30,14 @@ class LateController extends Controller
 
         return Excel::download(new LateExport, $file_name);
     }
+
+    public function exportPSToExcel()
+    {
+        $file_name = 'data_keterlambatan' . '.xlsx';
+
+        return Excel::download(new LatePsExport, $file_name);
+    }
+    
 
     public function index(Request $request)
     {
@@ -57,7 +67,7 @@ class LateController extends Controller
         $ps = User::with('rayon')->find(Auth::id());
 
         // Inisialisasi query untuk data keterlambatan
-        $latesQuery = Late::with('student');
+        $latesQuery = Late::with(['student.rayon', 'student.rombel']);
 
         // Jika pengguna memiliki rayon
         if ($ps->rayon) {
@@ -81,9 +91,12 @@ class LateController extends Controller
         // Ambil data keterlambatan
         $lates = $latesQuery->get();
 
+        // $roleId = Session::get('role_id');
+
         // Tampilkan view
         return view('late.ps.index', compact('lates'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -332,64 +345,74 @@ class LateController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Late $late, $id)
-    {
-        $late = Late::find($id);
-        $students = Student::all();
-        return view('late.admin.edit', compact('late', 'students'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Late $late, $id)
-{
-    try {
-        $request->validate([
-            'name' => 'required',
-            'date_time_late' => 'required',
-            'information' => 'required',
-            'bukti' => 'required|file|mimes:jpeg,png,pdf,doc,docx',
-        ]);
-
-        // Ensure the student exists
-        // $student = Student::where('id', $request->name)->first();
-        $student = Student::where('id', $request->input('name'))->first();
-
-        if (!$student) {
-            return redirect()->back()->with('error', 'Student not found.');
-        }
-
-        // Get the uploaded file
-        $buktiFile = $request->file('bukti');
-
-        // Check if the file is valid
-        if ($buktiFile->isValid()) {
-            // Get the file extension
-            $extension = $buktiFile->getClientOriginalExtension();
-
-            // Update the Late record
-            $late->update([
-                'student_id' => $student->id,
-                'date_time_late' => $request->date_time_late,
-                'information' => $request->information,
-                'bukti' => $buktiFile->storeAs('public/bukti', $request->name . '.' . $extension)
+    {
+        try {
+            $request->validate([
+                'student_id' => 'required',
+                'date_time_late' => 'required',
+                'information' => 'required',
+                'bukti' => 'nullable|file|mimes:jpeg,png,pdf,doc,docx',
             ]);
-
+    
+            // Ensure the student exists
+            $student = Student::find($request->input('student_id'));
+    
+            if (!$student) {
+                return redirect()->back()->with('error', 'Student not found.');
+            }
+    
+            // Check if there is a new bukti file
+            if ($request->hasFile('bukti')) {
+                // ... (bagian ini tetap sama)
+    
+                $extension = $buktiFile->getClientOriginalExtension();
+    
+                // Update the Late record with new bukti
+                $late->update([
+                    'student_id' => $student->id,
+                    'date_time_late' => $request->date_time_late,
+                    'information' => $request->information,
+                    'bukti' => $buktiFile->storeAs('public/bukti', $request->name . '.' . $extension)
+                ]);
+            } else {
+                // If no new bukti file, update the Late record without changing bukti
+                $late->update([
+                    'student_id' => $student->id,
+                    'date_time_late' => $request->date_time_late,
+                    'information' => $request->information,
+                ]);
+            }
+    
             return redirect()->route('late.index')->with('success', 'Berhasil mengubah data!');
-        } else {
-            // Handle the case where the file is not valid
-            return redirect()->back()->withErrors(['bukti' => 'The bukti field must be a valid file.']);
+        } catch (\Exception $e) {
+            // Log the exception for further investigation
+            \Log::error($e);
+    
+            // Redirect back with an error message
+            return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
         }
-    } catch (\Exception $e) {
-        // Log the exception for further investigation
-        \Log::error($e);
-
-        // Redirect back with an error message
-        return redirect()->back()->with('error', 'An unexpected error occurred. Please try again.');
     }
-}
+    
 
+    public function edit($id)
+    {
+        try {
+            // Retrieve the late record based on the provided ID
+            $late = Late::findOrFail($id);
+    
+            // Load data students
+            $students = Student::all();
+    
+            // Tampilkan view untuk formulir edit dengan membawa data late dan students
+            return view('late.admin.edit', compact('late', 'students'));
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika late tidak ditemukan atau kesalahan lainnya
+            \Log::error($e);
+            return redirect()->back()->with('error', 'Terjadi kesalahan. Silakan coba lagi.');
+        }
+    }
+    
 
     /**
      * Remove the specified resource from storage.

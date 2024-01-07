@@ -99,7 +99,7 @@
     <div class="col-md-6 mb-4">
       <div class="card shadow-lg">
         <div class="card-body">
-          <h5 class="card-title">Peserta Didik Rayon {{ $name_rayon }}</h5>
+          <h5 class="card-title"><b>Peserta Didik Rayon {{ $name_rayon }}</b></h5>
           <div class="card-bulet " style="display:flex;">
             <div class="card-text" style="  background-color: rgb(228, 214, 214); border-radius:100px; width:7%; height:15%;" ><center><ion-icon name="person-outline"></ion-icon></center></div>
             <p class="text-das" style="margin-left: 10px;">{{ $student }}</p>
@@ -111,8 +111,8 @@
     <div class="col-md-6 mb-4">
       <div class="card shadow-lg">
         <div class="card-body">
-          <h5 class="card-title">Keterlambatan  {{ $name_rayon }} Hari Ini</h5>
-          <div class="card-bulet " style="display:flex;">
+          <h5 class="card-title"><b>Keterlambatan  {{ $name_rayon }} Hari Ini </h5> ( {{ \Carbon\Carbon::now()->toDateString() }} )</b>
+          <div class="card-bulet " style="display:flex; margin-top:8px;">
             <div class="card-text" style="  background-color: rgb(228, 214, 214); border-radius:100px; width:7%; height:25%;" ><center><ion-icon name="bookmarks-outline"></ion-icon></center></div>
             <p class="text-das" style="margin-left: 10px;">{{$todayLateCount}}</p>
         </div>
