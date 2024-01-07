@@ -9,9 +9,6 @@
     @if (Session::get('failed'))
         <div class="alert alert-danger"> {{ Session::get('failed')}} </div>
     @endif
-    {{-- <h1 class="display-4">
-        Selamat Datang {{ Auth::user()->name }} !
-    </h1> --}}
     
     
 </div>
@@ -26,7 +23,7 @@
   </li>
 </ul> --}}
 
-
+@if (Auth::user()->role == 'admin')
 <div class="row" style="margin: 10px 40px;">
     <!-- Peserta Didik Card -->
     <div class="col-md-6 mb-4">
@@ -53,7 +50,8 @@
         </div>
       </div>
     </div>
-  
+    
+    
     <!-- Pembimbing Siswa Card -->
     <div class="col-md-3 mb-4">
       <div class="card shadow-lg">
@@ -94,5 +92,33 @@
       </div>
     </div>
     </div>
+    @endif
+
+    @if (Auth::user()->role == 'ps')
+    <div class="row" style="margin: 10px 40px;">
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-lg">
+        <div class="card-body">
+          <h5 class="card-title">Peserta Didik Rayon {{ $name_rayon }}</h5>
+          <div class="card-bulet " style="display:flex;">
+            <div class="card-text" style="  background-color: rgb(228, 214, 214); border-radius:100px; width:7%; height:15%;" ><center><ion-icon name="person-outline"></ion-icon></center></div>
+            <p class="text-das" style="margin-left: 10px;">{{ $student }}</p>
+          </div>
+          </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-lg">
+        <div class="card-body">
+          <h5 class="card-title">Keterlambatan  {{ $name_rayon }} Hari Ini</h5>
+          <div class="card-bulet " style="display:flex;">
+            <div class="card-text" style="  background-color: rgb(228, 214, 214); border-radius:100px; width:7%; height:25%;" ><center><ion-icon name="bookmarks-outline"></ion-icon></center></div>
+            <p class="text-das" style="margin-left: 10px;">{{$todayLateCount}}</p>
+        </div>
+      </div>
+    </div>
+    </div>
+    @endif
 
 @endsection

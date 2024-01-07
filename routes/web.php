@@ -21,9 +21,11 @@ Route::middleware('IsGuest')->group(function() {
     Route::post('/login-auth', [UserController::class, 'loginAuth'])->name('login.auth');
 });
 Route::middleware('IsLogin')->group(function() {
-Route::get('/dashboard', function () {
-    return view('index');
-});
+    // Route::get('/dashboard', function () {
+    //     return view('index');
+    // });
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('index');
+
 Route::get('/logout', [UserController::class, 'logout'])->name('logout');
 Route::middleware('IsAdmin')->group(function() {
     Route::prefix('rombel')->name('rombel.')->group(function() {
@@ -52,7 +54,7 @@ Route::middleware('IsAdmin')->group(function() {
         Route::delete('/{id}', [UserController::class, 'destroy'])->name('delete');
     });
     Route::prefix('student')->name('admin.student.')->group(function() {
-        Route::get('/', [StudentController::class, 'index'])->name('index');
+        Route::get('/index', [StudentController::class, 'index'])->name('index');
         Route::get('/create', [StudentController::class, 'create'])->name('create');
         Route::post('/store', [StudentController::class, 'store'])->name('store');
         Route::get('/{id}', [StudentController::class, 'edit'])->name('edit');
@@ -64,7 +66,8 @@ Route::middleware('IsAdmin')->group(function() {
         Route::get('/create', [LateController::class, 'create'])->name('create');
         Route::post('/store', [LateController::class, 'store'])->name('store');
         Route::get('/rekap', [LateController::class, 'rekapitulasi'])->name('rekap');
-        Route::get('/surat-pernyataan/{id}', [LateController::class, 'suratPernyataan'])->name('surat');
+        Route::get('/surat-pernyataan/{id}', [LateController::class, 'unduhPDF'])->name('unduh');
+        Route::get('/print/{id}', [LateController::class, 'print'])->name('print');
         Route::get('/detail-keterlambatan/{id}', [LateController::class, 'detailKeterlambatan'])->name('detail');
         Route::get('/export', [LateController::class, 'exportToExcel'])->name('export');
         Route::get('/{id}', [LateController::class, 'edit'])->name('edit');
@@ -80,7 +83,10 @@ Route::middleware('IsPs')->group(function() {
         Route::get('/data', [LateController::class, 'data'])->name('index');
         Route::get('/rekap-ps', [LateController::class, 'rekapitulasiPs'])->name('rekap');
         Route::get('/surat/{id}', [LateController::class, 'surat'])->name('surat');
-        Route::get('/detail', [LateController::class, 'detail'])->name('detail');
+        Route::get('/detail/{id}', [LateController::class, 'detail'])->name('detail');
+        Route::get('/excel', [LateController::class, 'exportToExcel'])->name('export');
+        Route::get('/pernyataan/{id}', [LateController::class, 'unduhPS'])->name('unduh');
+        Route::get('/print-surat/{id}', [LateController::class, 'printPS'])->name('print');
     });
 });
 });

@@ -50,8 +50,8 @@
                             <th>Nis</th>
                             <th>Nama</th>
                             <th>Jumlah</th>
-                            <th></th>
-                            <th></th>
+                            <th>Detail</th>
+                            <th>Surat</th>
                             {{-- <th>Bukti</th> --}}
 
                         </tr>
@@ -69,19 +69,19 @@
                                 <td>{{ $item['student']['nis'] }}</td>
                                 <td>{{ $item['student']['name'] }}</td>
                                 <td>{{ $jumlahKeterlambatan }}</td>
-                                <td><a href="{{ route('admin.late.detail', ['id'=> $item['student']['id']]) }}">Detail</a></td>
+                                <td><a href="{{ route('admin.late.detail', ['id' => $item['student']['id']]) }}">Lihat</a>
+                                </td>
                                 <td>
                                     @if ($jumlahKeterlambatan >= 3)
-                                        <a href="{{ route('admin.late.surat', ['id' => $item['student']['id']]) }}">
+                                        <a href="{{ route('admin.late.print', ['id' => $item['student']['id']]) }}">
                                             <button class="btn btn-primary">Cek Surat Pernyataan</button>
                                         </a>
-                                    
                                     @endif
                                 </td>
                                 {{-- <td><img src="{{ $item['bukti'] }}" ><br></td> --}}
-
                             </tr>
                         @endforeach
+
                     </tbody>
                 </table>
             </div>

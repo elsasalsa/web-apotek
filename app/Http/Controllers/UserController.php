@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Rayon;
+use App\Models\Student;
+use App\Models\Late;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +14,22 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function dashboard()
+    {
+        $name_rayon = Rayon::where('user_id', Auth::user()->id)->pluck('rayon')->first();
+
+        $rayons = Rayon::where('user_id', Auth::user()->id)->pluck('id');
+        $students = Student::whereIn('rayon_id', $rayons)->pluck('id');
+        $lates = Late::whereIn('student_id', $students)
+            ->whereDate('date_time_late', Carbon::today())
+            ->get();
+        $todayLateCount = $lates->count();
+        
+        $student = Student::whereIn('rayon_id', $rayons)->count();
+
+        return view('index', compact('todayLateCount', 'student', 'name_rayon'));
+    }
+
     public function loginAuth(Request $request)
     {
         //validasi
@@ -42,22 +62,22 @@ class UserController extends Controller
     
     public function index(Request $request)
     {
-        //
-        $users = User::orderBy('name', 'ASC');
         $query = $request->input('query');
+        
+        $users = User::orderBy('name', 'ASC');
 
-        $users = User::when($query, function ($query) use ($request) {
-            return $query->where('id', 'like', '%' . $request->input('query') . '%')
-                        ->orWhere('name', 'like', '%' . $request->input('query') . '%')
-                        ->orWhere('email', 'like', '%' . $request->input('query') . '%')
-                        ->orWhere('role', 'like', '%' . $request->input('query') . '%');
-        })
-        ->get();
-        if (!$request->has('query')) {
-            $users = User::all();
+        if ($query) {
+            $users = $users->where('id', 'like', '%' . $query . '%')
+                ->orWhere('name', 'like', '%' . $query . '%')
+                ->orWhere('email', 'like', '%' . $query . '%')
+                ->orWhere('role', 'like', '%' . $query . '%');
         }
+
+        $users = $users->paginate(10);
+
         return view('user.index', compact('users'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -127,21 +147,28 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
         $request->validate([
             'name' => 'required',
             'email' => 'required',
-            'role' => 'required|max:255', 
+            'role' => 'required',
         ]);
 
-        User::where('id', $id)->update([
+        $userData = [
             'name' => $request->name,
             'email' => $request->email,
-            'role' => substr($request->role, 0, 255),
-        ]);
-        
+            'role' => $request->role,
+        ];
+
+        // Check if a new password is provided
+        if ($request->filled('password')) {
+            $userData['password'] = Hash::make($request->password);
+        }
+
+        User::where('id', $id)->update($userData);
+
         return redirect()->route('user.index')->with('success', 'Berhasil mengubah data!');
     }
+
 
     /**
      * Remove the specified resource from storage.

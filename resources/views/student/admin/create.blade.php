@@ -7,7 +7,7 @@
         @if (Session::get('success'))
             <div class="alert alert-success"> {{ Session::get('success') }}</div>
         @endif
-        
+
 
         <div class="main">
             <h3 class="text-data" style="margin: 25px 50px 5px 50px;">Data Siswa</h3>
@@ -28,19 +28,19 @@
                     <label for="nis" class="col-sm-2 col-form-label">Nis : </label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="nis" name="nis">
+                        @error('nis')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
-                    @error('nis')
-                        <div class="text-danger">{{ $message }}</div>
-                    @enderror
                 </div>
                 <div class="mb-3 row">
                     <label for="name" class="col-sm-2 col-form-label">Nama : </label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="name" name="name">
+                        @error('name')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
-                    @error('name')
-                        <div class="text-danger">{{ $message }}</div>
-                    @enderror
                 </div>
                 <div class="mb-3 row">
                     <label for="rombel" class="col-sm-2 col-form-label">Rombel : </label>

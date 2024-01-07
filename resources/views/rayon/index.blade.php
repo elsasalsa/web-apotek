@@ -1,14 +1,14 @@
 @extends('layouts.template')
 
 @section('content')
-    @if (Session::get('success'))
-        <div class="alert alert-success">{{ Session::get('success') }}</div>
-    @endif
-    @if (Session::get('deleted'))
-        <div class="alert alert-warning">
-            {{ Session::get('deleted') }}</div>
-    @endif
     <div class="main">
+        @if (Session::get('success'))
+            <div class="alert alert-success">{{ Session::get('success') }}</div>
+        @endif
+        @if (Session::get('deleted'))
+            <div class="alert alert-warning">
+                {{ Session::get('deleted') }}</div>
+        @endif
         <h3 class="rombel-text" style="margin: 30px 0 10px 50px;">Data Rayon</h3>
         <ul class="nav" style="margin-left: 35px;  ">
             <li class="nav-item">
@@ -24,8 +24,9 @@
                 <form action="{{ route('rayon.index') }}" style="" method="GET">
                     <input type="text" name="query" placeholder="Cari...">
                     <button type="submit" class="btn btn-info"><ion-icon name="search-outline"></ion-icon></button>
-                    <a href="{{ route('rayon.index') }}" class="btn btn-secondary"><ion-icon name="refresh-outline"></ion-icon></a>  
-            
+                    <a href="{{ route('rayon.index') }}" class="btn btn-secondary"><ion-icon
+                            name="refresh-outline"></ion-icon></a>
+
                 </form>
                 <a class="btn btn-secondary" style="" href="{{ route('rayon.create') }}">Tambah Data Rayon</a>
             </div>
@@ -44,7 +45,8 @@
                         <tr>
                             <td>{{ $no++ }}</td>
                             <td>{{ $item['rayon'] }}</td>
-                            <td>{{ $item['user']['name'] }}</td>
+                            <td>{{ $item['user']['name'] ?? 'N/A' }}</td>
+
                             <td class="d-flex">
                                 <a href="{{ route('rayon.edit', $item['id']) }}" class="btn btn-primary me-2">Edit</a>
                                 <form action="{{ route('rayon.delete', $item['id']) }}" method="post">

@@ -1,7 +1,7 @@
 @extends('layouts.template')
 
 @section('content')
-    <form action="{{ route('user.update', $user['id']) }}" method="post" >
+    <form action="{{ route('user.update', $user['id']) }}" method="post">
         @csrf
         @method('PATCH')
 
@@ -14,28 +14,46 @@
         @endif
 
         <div class="card p-5" style="margin: 20px 50px;">
-        <div class="mb-3 row">
-            <label for="name" class="col-sm-2 col-form-label">Nama : </label>
-            <div class="col-sm-10">
-                <input type="text" name="name" id="name" class="form-control" value="{{ $user['name'] }}">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1"><ion-icon name="person-outline"></ion-icon></span>
+                <input type="text" id="name" name="name" class="form-control" value="{{ $user['name'] }}"
+                    aria-label="name" placeholder="Masukkan Nama" aria-describedby="basic-addon1">
             </div>
-        </div>
-        <div class="mb-3 row">
-            <label for="email" class="col-sm-2 col-form-label">Email : </label>
-            <div class="col-sm-10">
-                <input type="text" name="email" id="email" class="form-control" value="{{ $user['email'] }}">
+            @error('name')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1"><ion-icon name="mail-outline"></ion-icon></span>
+                <input type="email" id="email" name="email" class="form-control" value="{{ $user['email'] }}"
+                    aria-label="Email" placeholder="Masukkan Email" aria-describedby="basic-addon1">
             </div>
-        </div>
-        <div class="mb-3 row">
-            <label for="role" class="col-sm-2 col-form-label">Role : </label>
-            <div class="col-sm-10">
-               <select name="role" id="role" class="form-select">
-                    <option selected disabled hidden>Pilih</option>
-                    <option value="admin" {{ $user['role'] == 'administrator' ? 'selected' : '' }}>administrator</option>
+            @error('email')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Role :</span>
+                <select name="role" id="role" class="form-select" aria-label="Default select example">
+                    <option selected hidden disabled>Pilih</option>
+                    <option value="admin" {{ $user['role'] == 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="ps" {{ $user['role'] == 'ps' ? 'selected' : '' }}>Pembimbing Siswa</option>
-               </select>
+                </select>
             </div>
-        </div>
-        <button type="submit" style="background-color: #9BB8CD; color: white;" class="btn mt-3">Ubah Data</button>
+            @error('role')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1"><ion-icon name="lock-open-outline"></ion-icon></span>
+                <input type="text" id="password" name="password" class="form-control" aria-label="password"
+                    placeholder="Masukkan Password Baru" aria-describedby="basic-addon1">
+            </div>
+            @error('password')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+
+            <button type="submit" style="background-color: #9BB8CD; color: white;" class="btn mt-3">Ubah Data</button>
     </form>
 @endsection

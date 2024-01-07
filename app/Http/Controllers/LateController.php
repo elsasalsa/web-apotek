@@ -7,9 +7,14 @@ use App\Exports\LateExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use App\Models\Late;
+use App\Models\Rombel;
+use App\Models\Rayon;
+use App\Models\User;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LateController extends Controller
@@ -48,26 +53,37 @@ class LateController extends Controller
     }   
     public function data(Request $request)
     {
-        $lates = Late::with('student');
-        $query = $request->input('query');
+        // Dapatkan pengguna yang sedang masuk
+        $ps = User::with('rayon')->find(Auth::id());
 
-        $lates = Late::when($query, function ($query) use ($request) {
-            return $query->where('id', 'like', '%' . $request->input('query') . '%')
-                        ->orWhere('date_time_late', 'like', '%' . $request->input('query') . '%')
-                        ->orWhere('information', 'like', '%' . $request->input('query') . '%')
-                        ->orWhere('student_id', 'like', '%' . $request->input('query') . '%');
-        })
-        ->get();
-        // $students = Student::when($query, function ($query) use ($request) {
-        //     return $query->where('nis', 'like', '%' . $request->input('query') . '%')
-        //                 ->orWhere('name', 'like', '%' . $request->input('query') . '%');
-        // })
-        // ->get();
-        if (!$request->has('query')) {
-            $lates = Late::all();
+        // Inisialisasi query untuk data keterlambatan
+        $latesQuery = Late::with('student');
+
+        // Jika pengguna memiliki rayon
+        if ($ps->rayon) {
+            $rayonName = $ps->rayon->rayon;
+
+            // Filter data keterlambatan hanya untuk siswa dengan rayon yang sesuai
+            $latesQuery->whereHas('student.rayon', function ($query) use ($rayonName) {
+                $query->where('rayon', $rayonName);
+            });
         }
+
+        // Handle pencarian
+        $query = $request->input('query');
+        if ($query) {
+            $latesQuery->where('id', 'like', '%' . $query . '%')
+                ->orWhere('date_time_late', 'like', '%' . $query . '%')
+                ->orWhere('information', 'like', '%' . $query . '%')
+                ->orWhere('student_id', 'like', '%' . $query . '%');
+        }
+
+        // Ambil data keterlambatan
+        $lates = $latesQuery->get();
+
+        // Tampilkan view
         return view('late.ps.index', compact('lates'));
-    }   
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -164,89 +180,130 @@ class LateController extends Controller
 
     public function rekapitulasiPs(Request $request)
     {
-        $lates = Late::with('student');
+        // Ambil informasi pengguna yang sedang masuk (role PS)
+        $ps = User::with('rayon')->find(Auth::id());
+
+        // Inisialisasi query untuk data keterlambatan
+        $latesQuery = Late::with(['student', 'student.rayon']);
+
+        // Jika pengguna memiliki rayon
+        if ($ps->rayon) {
+            $rayonName = $ps->rayon->rayon;
+
+            // Filter data keterlambatan hanya untuk siswa dengan rayon yang sesuai
+            $latesQuery->whereHas('student.rayon', function ($query) use ($rayonName) {
+                $query->where('rayon', $rayonName);
+            });
+        }
+
+        // Handle pencarian
         $query = $request->input('query');
+        if ($query) {
+            $latesQuery->where('id', 'like', '%' . $query . '%')
+                ->orWhere('date_time_late', 'like', '%' . $query . '%')
+                ->orWhere('information', 'like', '%' . $query . '%')
+                ->orWhere('student_id', 'like', '%' . $query . '%');
+        }
 
-        $lates = Late::when($query, function ($query) use ($request) {
-            return $query->where('id', 'like', '%' . $request->input('query') . '%')
-                        ->orWhere('date_time_late', 'like', '%' . $request->input('query') . '%')
-                        ->orWhere('information', 'like', '%' . $request->input('query') . '%')
-                        ->orWhere('student_id', 'like', '%' . $request->input('query') . '%');
-        })
-        ->get();
+        // Ambil data keterlambatan
+        $lates = $latesQuery->get();
+
+        // Proses data rekapitulasi hanya untuk rayon pengguna yang sedang masuk
+        $rekapitulasi = Late::selectRaw('lates.student_id as student_id, students.name as student_name, students.nis, COUNT(*) as total_late, MAX(lates.date_time_late) as lates_late_date')
+            ->join('students', 'lates.student_id', '=', 'students.id')
+            ->when($ps->rayon, function ($query) use ($ps) {
+                $query->whereHas('student.rayon', function ($query) use ($ps) {
+                    $query->where('rayon', $ps->rayon->rayon);
+                });
+            })
+            ->groupBy('student_id', 'students.name', 'students.nis')
+            ->get();
+
+        return view('late.ps.rekap', compact('rekapitulasi'));
+    }
+
+
+    public function print($id) 
+    {
+        $student = Student::find($id);
+        if (!$student) {
+            abort(404); // Handle the case where the student is not found
+        }
+
+        $rayon = Rayon::find($student['rayon_id']);
+        $rombel = Rombel::find($student['rombel_id']);
+        $ps = User::find($rayon['user_id']);
+
+        $lates = Late::where('student_id', $id)->get();
+
+        return view("late.admin.print", compact('lates', 'student', 'rayon', 'rombel', 'ps'));
+    }
+    public function printPS($id) 
+    {
+        $student = Student::find($id);
+        if (!$student) {
+            abort(404); // Handle the case where the student is not found
+        }
+
+        $rayon = Rayon::find($student['rayon_id']);
+        $rombel = Rombel::find($student['rombel_id']);
+        $ps = User::find($rayon['user_id']);
+
+        $lates = Late::where('student_id', $id)->get();
+
+        return view("late.ps.print", compact('lates', 'student', 'rayon', 'rombel', 'ps'));
+    }
+
+
+
+    public function unduhPDF($id)
+    {
+        $student = Student::where('id', $id)->first()->toArray();
+        view()->share('student',$student);
+
+        $rayon = Rayon::where('id', $student['rayon_id'])->first()->toArray();
+        view()->share('rayon',$rayon);
+        
+        $rombel = Rombel::where('id', $student['rombel_id'])->first()->toArray();
+        view()->share('rombel',$rombel);
+
+        $ps = User::where('id', $rayon['user_id'])->first();
+        view()->share('ps',$ps);
+
+        $lates = Late::where('student_id', $id)->get();
+        view()->share('lates', $lates);
+
+        $pdf = PDF::loadview('late.admin.unduh', $student);
+        return $pdf->download('Surat Pernyataan.pdf');
+    }
+    public function unduhPS($id)
+    {
+        $student = Student::where('id', $id)->first()->toArray();
+        view()->share('student',$student);
+
+        $rayon = Rayon::where('id', $student['rayon_id'])->first()->toArray();
+        view()->share('rayon',$rayon);
+        
+        $rombel = Rombel::where('id', $student['rombel_id'])->first()->toArray();
+        view()->share('rombel',$rombel);
+
+        $ps = User::where('id', $rayon['user_id'])->first();
+        view()->share('ps',$ps);
+
+        $lates = Late::where('student_id', $id)->get();
+        view()->share('lates', $lates);
+
+        $pdf = PDF::loadview('late.ps.unduh', $student);
+        return $pdf->download('Surat Pernyataan.pdf');
+    }
+
     
-        if (!$request->has('query')) {
-            $lates = Late::all();
-        }
 
-        
-        return view('late.ps.rekap', compact('lates'));
-    }
-
-    public function surat($id) 
+    public function detail(Request $request, $id) 
     {
-        
-        return view('late.ps.surat');
-    }
+        // $student_id = $request->input('student_id'); // Gantilah ini sesuai dengan nama input pada form
 
-    public function suratPernyataan($id)
-    {
-        $late = Late::with('student')->where('student_id', $id)->first();
-
-        if (!$late) {
-            return response()->json(['error' => 'ID not found'], 404);
-        }
-
-        $relatedLates = Late::where('student_id', $late->student_id)->orderBy('date_time_late', 'ASC')->get();
-        $students = $relatedLates->pluck('student')->unique('id')->values();
-
-        $lateByStudent = $relatedLates->groupBy('student.id');
-
-        view()->share('late', $relatedLates);
-        view()->share('students', $students);
-        view()->share('lateByStudent', $lateByStudent);
-
-        $pdf = PDF::loadView('late.pdf', compact('relatedLates', 'students', 'lateByStudent'));
-
-        return $pdf->download('Surat.pdf');
-    }
-    // public function suratPernyataan($id)
-    // {
-    //     // $lates = Late::where('student_id', $student_id)->get();
-    //     // return view(admin.late)
-    //     // $lates = Late::find($id);
-    //     // if ($id) {
-    //     //     return view('late.admin.surat', compact('lates'));
-    //     // }   
-    //     // Retrieve the total late data using a query
-    //     $total_late = Late::selectRaw('lates.student_id as student_id, students.name as student_name, students.nis, COUNT(*) as total_late, MAX(lates.date_time_late) as lates_late_date')
-    //         ->join('students', 'lates.student_id', '=', 'students.id')
-    //         ->groupBy('student_id', 'students.name', 'students.nis')
-    //         ->get();
-
-    //     // Retrieve the individual student data
-    //     $late = Student::with('rombel', 'rayon')->find($id);
-
-    //     // Convert the individual student data to an array
-        
-    //     $lates = $late->toArray();
-        
-
-    //     // Share the data to the view
-    //     view()->share(['total_late' => $total_late, 'lates' => $lates]);
-
-    //     // Load the PDF view with the shared data
-    //     $pdf = PDF::loadView('late.downloadPDF', ['total_late' => $total_late, 'lates' => $lates]);
-
-    //     // Download the PDF
-    //     return $pdf->download('Surat pernyataan.pdf');
-    // }
-
-    public function detail(Request $request) 
-    {
-        $student_id = $request->input('student_id'); // Gantilah ini sesuai dengan nama input pada form
-
-        $lates = Late::where('student_id', $student_id)->get();
+        $lates = Late::where('student_id', $id)->get();
 
         return view('late.ps.detail', compact('lates'));
     }
@@ -262,11 +319,7 @@ class LateController extends Controller
         
     }
 
-
-    public function export()
-    {
-
-    }
+    
 
     /**
      * Display the specified resource.
@@ -343,6 +396,7 @@ class LateController extends Controller
      */
     public function destroy($id)
     {
+        //
         Late::where('id', $id)->delete();
 
         return redirect()->back()->with('deleted', 'Berhasil menghapus data !');

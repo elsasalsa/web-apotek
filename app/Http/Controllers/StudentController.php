@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use App\Models\Rombel;
 use App\Models\Rayon;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
@@ -30,25 +32,51 @@ class StudentController extends Controller
         }
         return view('student.admin.index', compact('students'));
     }
-    public function data(Request $request)
-    {
+    // public function data(Request $request)
+    // {
         
-        $students = Student::with('rombel', 'rayon');
-        $query = $request->input('query');
+    //     $students = Student::with('rombel', 'rayon');
+    //     $query = $request->input('query');
 
-        $students = Student::when($query, function ($query) use ($request) {
-            return $query->where('id', 'like', '%' . $request->input('query') . '%')
-                        ->orWhere('nis', 'like', '%' . $request->input('query') . '%')
-                        ->orWhere('name', 'like', '%' . $request->input('query') . '%')
-                        ->orWhere('rombel_id', 'like', '%' . $request->input('query') . '%')
-                        ->orWhere('rayon_id', 'like', '%' . $request->input('query') . '%');
-        })
-        ->get();
-        if (!$request->has('query')) {
-            $students = Student::all();
-        }
-        return view('student.ps.data', compact('students'));
+    //     $students = Student::when($query, function ($query) use ($request) {
+    //         return $query->where('id', 'like', '%' . $request->input('query') . '%')
+    //                     ->orWhere('nis', 'like', '%' . $request->input('query') . '%')
+    //                     ->orWhere('name', 'like', '%' . $request->input('query') . '%')
+    //                     ->orWhere('rombel_id', 'like', '%' . $request->input('query') . '%')
+    //                     ->orWhere('rayon_id', 'like', '%' . $request->input('query') . '%');
+    //     })
+    //     ->get();
+    //     if (!$request->has('query')) {
+    //         $students = Student::all();
+    //     }
+    //     return view('student.ps.data', compact('students'));
+    // }
+
+    public function data()
+    {
+        $ps = User::with('rayon')->find(Auth::id());
+
+        if ($ps->rayon) {
+            $rayonName = $ps->rayon->rayon;
+
+            // Get students based on the rayon of the logged-in PS
+            $students = Student::with('rombel', 'rayon')
+                ->whereHas('rayon', function ($query) use ($rayonName) {
+                    $query->where('rayon', $rayonName);
+                })
+                ->get();
+
+            return view('student.ps.data', compact('students'));
+            } else {
+                // If PS doesn't have a rayon, show all students
+                $students = Student::with('rombel', 'rayon')->get();
+                return view('student.ps.data', compact('students'));
+            }
+        
+
+    // ...
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -85,7 +113,7 @@ class StudentController extends Controller
         ]);
         
 
-        return redirect()->route('student.admin.index')->with('success', 'Berhasil menambahkan data siswa!');
+        return redirect()->back()->with('success', 'Berhasil menambahkan data siswa!');
     }
 
     /**
@@ -131,14 +159,15 @@ class StudentController extends Controller
             'rayon_id' => $rayons->id,
         ]);
     
-        return redirect()->route('student.admin.index', compact( 'rombels', 'rayons'))->with('success', 'Berhasil mengubah data!');
+        return redirect()->route('admin.student.index', compact( 'rombels', 'rayons'))->with('success', 'Berhasil mengubah data!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(student $student, $id)
+    public function destroy($id)
     {
+        //
         Student::where('id', $id)->delete();
 
         return redirect()->back()->with('deleted', 'Berhasil menghapus data !');

@@ -75,12 +75,13 @@
     </nav>
     <div class="wrapper shadow-lg">
         <aside id="sidebar">
-
+            
             <ul class="sidebar-nav ">
                 <li class="sidebar-item">
                     <a href="{{ URL('/dashboard') }}" class="sidebar-link"><ion-icon name="apps-outline"></ion-icon>
                         Dashboard</a>
                 </li>
+                
 
                 @if (Auth::user()->role == 'admin')
                 <li class="sidebar-item">

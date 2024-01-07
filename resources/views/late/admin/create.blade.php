@@ -34,10 +34,10 @@
                                 <option value="{{ $item['id'] }}">{{ $item['name'] }}</option>
                             @endforeach
                         </select>
-                    </div>
-                    @error('name')
+                        @error('name')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
+                    </div>
                 </div>
                 <div class="mb-3 row">
                     <label for="date_time_late"
@@ -45,11 +45,10 @@
                     <div class="col-sm-10">
                         <input type="datetime-local" class="form-control" id="date_time_late" name="date_time_late"
                             value="{{ old('date_time_late') }}">
-
+                            @error('date_time_late')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
-                    @error('date_time_late')
-                        <div class="text-danger">{{ $message }}</div>
-                    @enderror
                 </div>
                 <div class="mb-3 row">
                     <label for="information"
@@ -58,11 +57,11 @@
                     <div class="col-sm-10">
                         <input type="text" class="form-control" id="information" name="information"
                             value="{{ old('information') }}">
-
+                            @error('information')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
-                    @error('information')
-                        <div class="text-danger">{{ $message }}</div>
-                    @enderror
+                    
                 </div>
                 <div class="mb-3 row">
                     <label for="bukti" class="col-sm-2 col-form-label @error('bukti') is-invalid @enderror">Bukti
@@ -74,9 +73,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    @error('bukti')
-                        <div class="text-danger">{{ $message }}</div>
-                    @enderror
+                    
                 </div>
                 {{-- <video id="camera" width="640" height="480" autoplay></video>
 
